@@ -1,9 +1,9 @@
 import uniqid from 'uniqid';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { commentCreate } from './redux/actions';
+import { commentCreate, commentsLoad } from './redux/actions';
 
 import SingleComments from './SingleComments';
 
@@ -26,7 +26,11 @@ function Comments() {
     const id = uniqid();
     dispatch(commentCreate(textComment, id));
   };
-  console.log('comments >>', comments);
+
+  useEffect(() => {
+    dispatch(commentsLoad())
+  }, []);
+
   return (
     <div className="card-comments">
       <form className="comments-item-create" onSubmit={handleSubmit}>
