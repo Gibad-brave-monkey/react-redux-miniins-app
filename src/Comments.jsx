@@ -26,7 +26,7 @@ function Comments() {
     const id = uniqid();
     dispatch(commentCreate(textComment, id));
   };
-
+  console.log('comments >>', comments);
   return (
     <div className="card-comments">
       <form className="comments-item-create" onSubmit={handleSubmit}>
