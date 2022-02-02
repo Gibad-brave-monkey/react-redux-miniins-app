@@ -7,7 +7,9 @@ import {
   COMMENT_DELETE,
   COMMENTS_LOAD,
   LOADER_DISPLAY_ON,
-  LOADER_DISPLAY_OFF
+  LOADER_DISPLAY_OFF,
+  ERROR_DISPLAY_OFF,
+  ERROR_DISPLAY_ON
 } from "./types";
 
 export function incrementLikes() {
@@ -51,6 +53,25 @@ export function loaderOff(text, id) {
   }
 }
 
+export function errorOn(text) {
+  return dispatch => {
+    dispatch({
+        type: ERROR_DISPLAY_ON,
+        text
+    });
+
+    setTimeout(() => {
+      dispatch(errorOff());
+    }, 2000);
+  }
+}
+
+export function errorOff() {
+  return {
+    type: ERROR_DISPLAY_OFF,
+  }
+}
+
 export function commentUpdate(text, id) {
   return {
     type: COMMENT_UPDATE,
@@ -70,13 +91,18 @@ export function commentDelete(id) {
 
 export function commentsLoad() {
   return async dispatch => {
-    dispatch(loaderOn());
-    const response = await fetch('https://jsonplaceholder.typicode.com/comments?_limit=10');
-    const jsonData = await response.json();
-    dispatch({
-      type: COMMENTS_LOAD,
-      data: jsonData
-    });
-    dispatch(loaderOff())
+    try {
+      dispatch(loaderOn());
+        const response = await fetch('https://jsonplaceholder.typicode.com/comments?_limit=10');
+        const jsonData = await response.json();
+      dispatch({
+        type: COMMENTS_LOAD,
+        data: jsonData
+      });
+      dispatch(loaderOff())
+    } catch(err) {
+      dispatch(errorOn("Something goes wrong, I've already working on it"));
+      dispatch(loaderOff())
+    }
   }
 }
